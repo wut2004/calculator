@@ -47,6 +47,16 @@ change and the plan must be re-approved.
 
 Est. key: S ≈ under 30 min, M ≈ 30–90 min.
 
+**Tooling side-effects, called out per reviewer request (docs/sdlc/REVIEW.md hunk-mapping check):**
+these three hunks don't map to a "feature" step above, but are necessary consequences of the steps
+they're attached to, not scope creep:
+- `frontend/tsconfig.json` (step 10): adds `"vite/client"` to `types` so the `?raw` source
+  imports used by step 10's static no-backend-import check typecheck.
+- `frontend/.gitignore` (steps 1–11): ignores `*.tsbuildinfo`, an artifact `tsc -b` (the
+  Feedback-loop build check below) produces once TypeScript project references are built.
+- `frontend/package-lock.json` (steps 1–11): first `npm install` in this scaffold generated it;
+  committed for reproducible installs, standard practice.
+
 ## Feedback loop (what the agent checks itself against)
 - [ ] Unit tests pass — `cd frontend && npm test` (vitest), all new `calculatorEngine.test.tsx` / `Calculator.test.tsx` cases green and the existing `App.test.tsx` still green
 - [ ] Lint clean — `cd frontend && npm run lint` (eslint, zero warnings)

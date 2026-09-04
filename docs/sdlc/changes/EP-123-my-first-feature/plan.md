@@ -1,7 +1,7 @@
 ---
 change: EP-123
 stage: build
-status: approved
+status: done
 derived_from: spec.md
 created: 2026-09-04
 ---

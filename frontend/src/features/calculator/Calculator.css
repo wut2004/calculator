@@ -43,6 +43,56 @@
   white-space: nowrap;
 }
 
+.calculator__mode-toggle {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: calc(var(--calculator-radius) - 6px);
+  background: #2a2d38;
+  color: #f5f6fa;
+  font-size: clamp(0.85rem, 3.5vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    transform 80ms ease;
+}
+
+.calculator__mode-toggle:hover {
+  background: #363a48;
+}
+
+.calculator__mode-toggle:active {
+  background: #40465a;
+  transform: scale(0.98);
+}
+
+.calculator__mode-toggle:focus-visible {
+  outline: 3px solid #7aa2ff;
+  outline-offset: 2px;
+}
+
+.calculator__mode-toggle[aria-pressed="true"] {
+  background: #3a4a8f;
+}
+
+.calculator__mode-toggle[aria-pressed="true"]:hover {
+  background: #46579f;
+}
+
+/*
+ * REQ-12: the scientific panel reflows via auto-fit + a fluid minmax() floor
+ * (no fixed px width) so it holds a usable grid from narrow mobile viewports
+ * up through desktop, matching .calculator__grid's fluid approach.
+ */
+.calculator__panel--scientific {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(4rem, 100%), 1fr));
+  gap: var(--calculator-gap);
+}
+
 .calculator__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -117,4 +167,18 @@
 
 .calculator__button--clear:active {
   background: #d15252;
+}
+
+.calculator__button--scientific {
+  background: #232636;
+  aspect-ratio: 1 / 0.75;
+  font-size: clamp(0.75rem, 3.2vw, 1.05rem);
+}
+
+.calculator__button--scientific:hover {
+  background: #2d3145;
+}
+
+.calculator__button--scientific:active {
+  background: #383d54;
 }

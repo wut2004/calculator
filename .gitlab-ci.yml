@@ -1,0 +1,40 @@
+stages: [govern, test, review, deploy]
+
+artifact-chain:
+  stage: govern
+  image: alpine:3
+  script:
+    - apk add --no-cache bash grep git
+    - bash scripts/check-artifacts.sh
+
+test:
+  stage: test
+  image: python:3.12
+  before_script: [apt-get update -qq && apt-get install -yqq nodejs npm python3-pip >/dev/null || true]
+  script:
+    - (cd backend && pip install -q -e '.[dev]' && ruff check . && mypy app && pytest -q)
+    - (cd frontend && npm ci && npm run lint && npm run typecheck && npm test)
+
+change-branch-has-plan:
+  stage: govern
+  image: alpine:3
+  rules: [{ if: $CI_MERGE_REQUEST_IID }]
+  script:
+    - apk add --no-cache bash grep git
+    - git checkout -q "$CI_COMMIT_REF_NAME"
+    - bash scripts/check-artifacts.sh --current
+    - dir="$(scripts/current-change.sh)" && grep -lqE '^status:\ *(approved|done)' "$dir"/plan*.md
+
+agentic-review:
+  stage: review
+  image: node:20
+  rules: [{ if: $CI_MERGE_REQUEST_IID }]
+  script:
+    - npm i -g @anthropic-ai/claude-code
+    - claude -p "/review" --output-format text > review-findings.md
+  artifacts: { paths: [review-findings.md] }
+  # Requires ANTHROPIC_API_KEY (or Bedrock/Vertex env) as a masked CI variable.
+
+# deploy:
+#   stage: deploy
+#   when: manual   # human gate — see docs/sdlc/REVIEW.md tiers

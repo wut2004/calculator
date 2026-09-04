@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob", "Bash(go test:*)", "Bash(nx test:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(scripts/current-change.sh)", "Bash(scripts/check-artifacts.sh:*)"],
+    "deny":  ["Bash(git push --force:*)", "Read(./.env)", "Read(./**/*.pem)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": ".claude/hooks/gate-plan.sh" }] },
+      { "matcher": "Bash",                  "hooks": [{ "type": "command", "command": ".claude/hooks/guard-bash.sh" }] }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 ---
 change: EP-123
 stage: plan
-status: approved         # draft | approved | done | superseded
+status: done             # draft | approved | done | superseded
 author: wuttichaisrisuk
 created: 2026-09-04
 jira: EP-123

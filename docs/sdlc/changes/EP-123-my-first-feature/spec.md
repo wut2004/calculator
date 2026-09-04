@@ -1,7 +1,7 @@
 ---
 change: EP-123
 stage: design
-status: approved
+status: done
 derived_from: intent.md
 created: 2026-09-04
 ---

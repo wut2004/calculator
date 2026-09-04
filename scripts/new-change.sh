@@ -25,11 +25,22 @@ for f in intent spec plan; do
   sed -e "s/__KEY__/$KEY/g" -e "s/__DATE__/$(date +%Y-%m-%d)/g" -e "s/__AUTHOR__/$AUTHOR/g" \
       "docs/sdlc/templates/$f.md" > "$DIR/$f.md"
 done
-sed -i -e "s/^source: .*/source: $SOURCE/" "$DIR/intent.md"
+# Portable in-place edit: BSD sed (macOS) treats `sed -i -e` as `-i` with
+# backup suffix "-e", which silently writes a stray "<file>-e" backup. Using
+# a temp file + mv works identically on BSD and GNU sed.
+sed_inplace() {
+  local pattern="$1" file="$2"
+  local tmp
+  tmp="$(mktemp)"
+  sed -e "$pattern" "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
+sed_inplace "s/^source: .*/source: $SOURCE/" "$DIR/intent.md"
 if [[ -n "$FROM" ]]; then
-  sed -i -e "s/^supersedes: .*/supersedes: $FROM/" "$DIR/intent.md"
+  sed_inplace "s/^supersedes: .*/supersedes: $FROM/" "$DIR/intent.md"
   inc="docs/sdlc/incidents/$FROM.md"
-  [[ -f "$inc" ]] && sed -i -e "s/^follow_up_change: .*/follow_up_change: $KEY/" "$inc"
+  [[ -f "$inc" ]] && sed_inplace "s/^follow_up_change: .*/follow_up_change: $KEY/" "$inc"
 fi
 git add "$DIR"
 git commit -qm "$KEY: start change $NAME" -m "intent/spec/plan scaffolded from templates" 2>/dev/null || true

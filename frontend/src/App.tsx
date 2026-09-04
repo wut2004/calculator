@@ -1,4 +1,9 @@
+import { Calculator } from "./features/calculator/Calculator";
+
 export function App() {
-  // Feature routes/components are mounted here by later changes.
-  return <main data-testid="app">calculator</main>;
+  return (
+    <main data-testid="app">
+      <Calculator />
+    </main>
+  );
 }

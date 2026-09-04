@@ -5,3 +5,8 @@ test("renders app shell", () => {
   render(<App />);
   expect(screen.getByTestId("app")).toBeInTheDocument();
 });
+
+test("renders the calculator display", () => {
+  render(<App />);
+  expect(screen.getByTestId("calculator-display")).toBeInTheDocument();
+});
